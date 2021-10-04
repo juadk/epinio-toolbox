@@ -1,10 +1,10 @@
-# epinio-toolbox
+# EKS box
 
 Before deploying, make sure to customize the deployment with the variables within the [env.yml](./env.yml) file.</br>
 Your aws credentials has to be filled in the [secrets.yml](secrets.yml) file.
 
 Once done, start the deployment with `vagrant up`.</br>
-Then, you should be able to create the EKS cluster with:
+Then, you should be able to login into the VM with `vagrant ssh` and create the EKS cluster:
 
 ```
 eksctl create cluster --name=$AWS_EKS_CLUSTER_NAME \
