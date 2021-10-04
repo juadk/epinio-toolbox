@@ -1,0 +1,46 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+
+BOX_IMAGE = 'opensuse/Tumbleweed.x86_64'
+bashrc_location = '/home/vagrant/.bashrc'
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+  config.vm.define "dev-box" do |subconfig|
+    subconfig.vm.hostname = "dev-box"
+    subconfig.vm.box = BOX_IMAGE
+    subconfig.vm.box_check_update = true
+    #subconfig.vm.network :private_network, ip: host_ip
+    subconfig.vm.network :public_network,
+      :dev => "virbr0",
+      :mode => "bridge",
+      :type => "bridge"
+    subconfig.vm.provider :libvirt do |libvirt|
+      libvirt.memory = 8192
+      libvirt.cpus = 2
+    end
+    subconfig.vm.provision "shell", inline: <<-SHELL
+    echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> #{bashrc_location}
+    source #{bashrc_location}
+    sudo zypper --non-interactive in -t pattern apparmor
+    sudo zypper --non-interactive in wget curl git
+    curl -sfL https://get.k3s.io | sh -
+    sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+    wget https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
+    tar -zxvf helm-v3.7.0-linux-amd64.tar.gz
+    sudo mv linux-amd64/helm /usr/local/bin/helm
+    curl -o epinio -L https://github.com/epinio/epinio/releases/download/v0.1.1/epinio-linux-amd64
+    chmod +x epinio
+    sudo mv ./epinio /usr/local/bin/epinio
+    git clone https://github.com/epinio/epinio.git
+    epinio install
+    SHELL
+  end
+end
