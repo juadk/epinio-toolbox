@@ -1,11 +1,6 @@
 name: Vagrantfiles check
 
-on:
-  pull_request:
-    branches: [main]
-    paths:
-    - 'eks-box'
-    - 'k3s-epinio-1-node'
+on: pull_request
 
 jobs:
   vagrantfiles-validation:
