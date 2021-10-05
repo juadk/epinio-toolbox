@@ -29,14 +29,14 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     mkdir /home/vagrant/.aws
     cat <<-'EOF' > /home/vagrant/.bashrc
-export AWS_EKS_CLUSTER_NAME=#{settings["aws"]["prefix"]}-epinio
+export AWS_EKS_CLUSTER_NAME=#{settings["aws"]["cluster_name"]}-epinio
 export AWS_REGION=#{settings["aws"]["region"]}
 export AWS_EKS_NODE_COUNT=#{settings["aws"]["eks_node_count"]}
 export AWS_EKS_NODE_VM_SIZE=#{settings["aws"]["vm_size"]}
 export AWS_EKS_NODE_DISK_SIZE=#{settings["aws"]["disk_size"]}
 export AWS_SSH_KEY=#{settings["aws"]["ssh_key"]}
-export AWS_EKS_KUBECONFIG=~/kubeconfig_#{settings["aws"]["prefix"]}
-export KUBECONFIG=`pwd`/kubeconfig_#{settings["aws"]["prefix"]}
+export AWS_EKS_KUBECONFIG=~/kubeconfig_#{settings["aws"]["cluster_name"]}
+export KUBECONFIG=`pwd`/kubeconfig_#{settings["aws"]["cluster_name"]}
 EOF
     cat <<-'EOF' > /home/vagrant/.aws/credentials
 [default]
