@@ -1,3 +1,5 @@
+[![Vagrantfiles check](https://github.com/juadk/epinio-toolbox/actions/workflows/vagrant.yml/badge.svg?branch=main)](https://github.com/juadk/epinio-toolbox/actions/workflows/vagrant.yml)
+
 # epinio-toolbox
 
 The purpose of this repo is to have several fast way for testing Epinio on top of different platforms.
