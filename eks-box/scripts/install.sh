@@ -1,7 +1,7 @@
 #!/bin/bash
 
-AWS_PREFIX=$(echo $1 | awk '{print tolower($0)}')
-AWS_RANDOM=$(mktemp -u aXXXXX | awk '{print tolower($0)}')
+typeset -l AWS_PREFIX=$1
+typeset -l AWS_RANDOM=$(mktemp -u aXXXXX)
 
 cat >>/home/vagrant/.bashrc<<EOF
 AWS_EKS_CLUSTER_NAME=$AWS_PREFIX-$AWS_RANDOM-epinio
@@ -12,4 +12,4 @@ AWS_EKS_NODE_DISK_SIZE=$5
 AWS_SSH_KEY=$6
 AWS_EKS_KUBECONFIG=
 KUBECONFIG=
-
+EOF
