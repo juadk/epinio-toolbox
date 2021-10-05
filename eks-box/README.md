@@ -19,3 +19,6 @@ eksctl create cluster --name=$AWS_EKS_CLUSTER_NAME \
 
 For deleting the cluster, execute this command: </br>
 `eksctl delete cluster --region=$AWS_REGION --name=$AWS_EKS_CLUSTER_NAME`
+
+For deleting the VM, execute this command: </br>
+`vagrant destroy`
