@@ -19,9 +19,6 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = settings["vm"]["hostname"]
   config.vm.box = settings["vm"]["image"]
   config.vm.box_check_update = false
-  config.vm.network :public_network,
-    :bridge => settings["vm"]["bridge"],
-    :dev => settings["vm"]["bridge"]
   config.vm.provider :libvirt do |libvirt|
     libvirt.memory = settings["vm"]["memory"]
     libvirt.cpus = settings["vm"]["cpus"]
