@@ -1,0 +1,30 @@
+name: Vagrant validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - 'eks-box'
+
+jobs:
+  vagrant-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Fetch Branch
+        id: branch
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }} | grep origin/main)
+          branch=${raw##*/}
+          echo "::set-output name=BRANCH_NAME::$branch"
+      - name: Install Vagrant
+        run: |
+          sudo apt install vagrant
+      - name: Validate Vagrantfile
+        run: |
+          cd epinio-toolbox/eks-box
+          mv secrets.yml-template secrets.yml
+          vagrant validate
