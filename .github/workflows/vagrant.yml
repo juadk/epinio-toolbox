@@ -2,9 +2,11 @@ name: Vagrant validate
 
 on:
   push:
+  pull_request:
     branches: [main]
     paths:
     - 'eks-box'
+    - 'k3s-epinio-1-node'
 
 jobs:
   vagrant-validate:
@@ -12,19 +14,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Fetch Branch
-        id: branch
-        run: |
-          raw=$(git branch -r --contains ${{ github.ref }} | grep origin/main)
-          branch=${raw##*/}
-          echo "::set-output name=BRANCH_NAME::$branch"
       - name: Install Vagrant
         run: |
           sudo apt install vagrant
       - name: Validate Vagrantfile
         run: |
-          cd epinio-toolbox/eks-box
+          cd eks-box
           mv secrets.yml-template secrets.yml
+          vagrant validate
+          cd ../k3s-epinio-1-node
           vagrant validate
