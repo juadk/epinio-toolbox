@@ -36,7 +36,7 @@ export AWS_EKS_NODE_VM_SIZE=#{settings["aws"]["vm_size"]}
 export AWS_EKS_NODE_DISK_SIZE=#{settings["aws"]["disk_size"]}
 export AWS_SSH_KEY=#{settings["aws"]["ssh_key"]}
 export AWS_EKS_KUBECONFIG=~/kubeconfig_#{settings["aws"]["cluster_name"]}
-export KUBECONFIG=`pwd`/kubeconfig_#{settings["aws"]["cluster_name"]}
+export KUBECONFIG=~/kubeconfig_#{settings["aws"]["cluster_name"]}
 EOF
     cat <<-'EOF' > /home/vagrant/.aws/credentials
 [default]
