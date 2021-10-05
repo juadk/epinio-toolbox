@@ -1,7 +1,6 @@
-name: Vagrant validate
+name: Vagrantfiles check
 
 on:
-  push:
   pull_request:
     branches: [main]
     paths:
@@ -9,7 +8,7 @@ on:
     - 'k3s-epinio-1-node'
 
 jobs:
-  vagrant-validate:
+  vagrantfiles-validation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -17,7 +16,7 @@ jobs:
       - name: Install Vagrant
         run: |
           sudo apt install vagrant
-      - name: Validate Vagrantfile
+      - name: Validate vagrantfiles
         run: |
           cd eks-box
           mv secrets.yml-template secrets.yml
