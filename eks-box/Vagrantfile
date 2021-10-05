@@ -16,21 +16,20 @@ secrets = YAML::load_file("#{dir}/secrets.yml")
 
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
-  config.vm.define "dev-box" do |subconfig|
-    subconfig.vm.hostname = settings["vm"]["hostname"]
-    subconfig.vm.box = settings["vm"]["image"]
-    subconfig.vm.box_check_update = false
-    subconfig.vm.network :public_network,
-      :dev => "virbr0",
-      :mode => "bridge",
-      :type => "bridge"
-    subconfig.vm.provider :libvirt do |libvirt|
-      libvirt.memory = settings["vm"]["memory"]
-      libvirt.cpus = settings["vm"]["cpus"]
-    end
-    subconfig.vm.provision "shell", inline: <<-SHELL
-      mkdir /home/vagrant/.aws
-      cat <<-'EOF' > /home/vagrant/.bashrc
+  config.vm.hostname = settings["vm"]["hostname"]
+  config.vm.box = settings["vm"]["image"]
+  config.vm.box_check_update = false
+  config.vm.network :public_network,
+    :dev => "virbr0",
+    :mode => "bridge",
+    :type => "bridge"
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.memory = settings["vm"]["memory"]
+    libvirt.cpus = settings["vm"]["cpus"]
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    mkdir /home/vagrant/.aws
+    cat <<-'EOF' > /home/vagrant/.bashrc
 export AWS_EKS_CLUSTER_NAME=#{settings["aws"]["prefix"]}-epinio
 export AWS_REGION=#{settings["aws"]["region"]}
 export AWS_EKS_NODE_COUNT=#{settings["aws"]["eks_node_count"]}
@@ -40,18 +39,17 @@ export AWS_SSH_KEY=#{settings["aws"]["ssh_key"]}
 export AWS_EKS_KUBECONFIG=~/kubeconfig_#{settings["aws"]["prefix"]}
 export KUBECONFIG=`pwd`/kubeconfig_#{settings["aws"]["prefix"]}
 EOF
-      cat <<-'EOF' > /home/vagrant/.aws/credentials
+    cat <<-'EOF' > /home/vagrant/.aws/credentials
 [default]
 aws_access_key_id = #{secrets["aws"]["access_key_id"]}
 aws_secret_access_key = #{secrets["aws"]["secret_access_key"]}
 EOF
     SHELL
-    subconfig.vm.provision "shell", path: "zypper/install.sh"
-    subconfig.vm.provision "shell", path: "eksctl/install.sh"
-    subconfig.vm.provision "shell", path: "aws-cli/install.sh"
-    subconfig.vm.provision "shell", path: "kubectl/install.sh",:args => [settings["kubectl"]["version"]]
-    subconfig.vm.provision "shell", path: "aws-iam-authenticator/install.sh",:args => [settings["aws-iam-authenticator"]["version"]]
-    subconfig.vm.provision "shell", path: "helm/install.sh",:args => [settings["helm"]["version"]]
-    subconfig.vm.provision "shell", path: "epinio/install.sh",:args => [settings["epinio"]["version"]]
-  end
+  config.vm.provision "shell", path: "zypper/install.sh"
+  config.vm.provision "shell", path: "eksctl/install.sh"
+  config.vm.provision "shell", path: "aws-cli/install.sh"
+  config.vm.provision "shell", path: "kubectl/install.sh",:args => [settings["kubectl"]["version"]]
+  config.vm.provision "shell", path: "aws-iam-authenticator/install.sh",:args => [settings["aws-iam-authenticator"]["version"]]
+  config.vm.provision "shell", path: "helm/install.sh",:args => [settings["helm"]["version"]]
+  config.vm.provision "shell", path: "epinio/install.sh",:args => [settings["epinio"]["version"]]
 end
