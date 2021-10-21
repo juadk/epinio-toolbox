@@ -41,11 +41,14 @@ aws_access_key_id = #{secrets["aws"]["access_key_id"]}
 aws_secret_access_key = #{secrets["aws"]["secret_access_key"]}
 EOF
     SHELL
-  config.vm.provision "shell", path: "zypper/install.sh"
-  config.vm.provision "shell", path: "eksctl/install.sh"
-  config.vm.provision "shell", path: "aws-cli/install.sh"
-  config.vm.provision "shell", path: "kubectl/install.sh",:args => [settings["kubectl"]["version"]]
-  config.vm.provision "shell", path: "aws-iam-authenticator/install.sh",:args => [settings["aws-iam-authenticator"]["version"]]
-  config.vm.provision "shell", path: "helm/install.sh",:args => [settings["helm"]["version"]]
-  config.vm.provision "shell", path: "epinio/install.sh",:args => [settings["epinio"]["version"]]
+  config.vm.provision :shell, :path => "zypper/install.sh"
+  config.vm.provision :shell, :path => "eksctl/install.sh"
+  config.vm.provision :shell, :path => "aws-cli/install.sh"
+  config.vm.provision :shell, :path => "kubectl/install.sh", :args => [settings["kubectl"]["version"]]
+  config.vm.provision :shell, :path => "aws-iam-authenticator/install.sh", :args => [settings["aws-iam-authenticator"]["version"]]
+  config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
+  config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["version"]]
+  if settings["aws"]["provision_eks"] == true then
+    config.vm.provision :shell, :path => "eks/install.sh", :privileged => false
+  end
 end
