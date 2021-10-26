@@ -20,3 +20,6 @@ jobs:
           vagrant validate
           cd ../k3s-epinio-1-node
           vagrant validate
+          cd ../gke-box
+          touch gcp-service-account.json
+          vagrant validate

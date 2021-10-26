@@ -14,6 +14,10 @@ Each folders has its own README file:
 A basic ready openSUSE TW box for deploying epinio on EKS with all the needed dependencies included.</br>
 Make sure to follow the [README](./eks-box/README.md) because some variables have to be configured.
 
+## gke-box
+A basic ready openSUSE TW box for deploying epinio on GKE with all the needed dependencies included.</br>
+Make sure to follow the [README](./gke-box/README.md) because some variables have to be configured.
+
 ## k3s-Epinio-1-node
 Another openSUSE TW box for installing epinio on top of k3s with all the needed dependencies included.</br>
 Once again, refer to the [README](./k3s-epinio-1-node/README.md) to configure few mandatory variables before.
