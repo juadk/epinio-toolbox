@@ -17,7 +17,6 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "dev-box"
     subconfig.vm.box = BOX_IMAGE
     subconfig.vm.box_check_update = true
-    #subconfig.vm.network :private_network, ip: host_ip
     subconfig.vm.network :public_network,
       :dev => "virbr0",
       :mode => "bridge",
@@ -36,10 +35,11 @@ Vagrant.configure("2") do |config|
     wget https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
     tar -zxvf helm-v3.7.0-linux-amd64.tar.gz
     sudo mv linux-amd64/helm /usr/local/bin/helm
-    curl -o epinio -L https://github.com/epinio/epinio/releases/download/v0.1.1/epinio-linux-amd64
+    curl -o epinio -L https://github.com/epinio/epinio/releases/download/v0.1.4/epinio-linux-amd64
     chmod +x epinio
     sudo mv ./epinio /usr/local/bin/epinio
     git clone https://github.com/epinio/epinio.git
+    sudo chown -R vagrant:root epinio
     epinio install
     SHELL
   end

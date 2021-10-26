@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+
+# Load variables from YAML files
+require 'yaml'
+dir = File.dirname(File.expand_path(__FILE__))
+settings = YAML::load_file("#{dir}/env.yml")
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+  config.vm.hostname = settings["vm"]["hostname"]
+  config.vm.box = settings["vm"]["image"]
+  config.vm.box_check_update = false
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.memory = settings["vm"]["memory"]
+    libvirt.cpus = settings["vm"]["cpus"]
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    cat <<-'EOF' > /home/vagrant/.bashrc
+export GKE_CLUSTER_NAME=#{settings["gke"]["cluster_name"]}-epinio
+export GKE_ZONE=#{settings["gke"]["zone"]}
+export GKE_NODE_COUNT=#{settings["gke"]["node_count"]}
+export GKE_NODE_VM_SIZE=#{settings["gke"]["vm_size"]}
+export GKE_NODE_DISK_SIZE=#{settings["gke"]["disk_size"]}
+EOF
+    SHELL
+  config.vm.provision "file", source: "./gcp-service-account.json", destination: "gcp-service-account.json"
+  config.vm.provision :shell, :path => "zypper/install.sh"
+  config.vm.provision :shell, :path => "kubectl/install.sh", :args => [settings["kubectl"]["version"]]
+  config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
+  config.vm.provision :shell, :path => "google-sdk/install.sh", :args => [settings["google-sdk"]["version"]], :privileged => false
+  config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["version"]]
+  if settings["gke"]["provision_gke"] == true then
+    config.vm.provision :shell, :path => "gke/install.sh", :privileged => false
+  end
+end
