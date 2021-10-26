@@ -10,6 +10,10 @@ Before deploying, you must install [Vagrant](https://www.vagrantup.com/downloads
 
 Each folders has its own README file:
 
+## aks-box
+A basic ready openSUSE TW box for deploying epinio on AKS with all the needed dependencies included.</br>
+Make sure to follow the [README](./aks-box/README.md) because some variables have to be configured.
+
 ## eks-box
 A basic ready openSUSE TW box for deploying epinio on EKS with all the needed dependencies included.</br>
 Make sure to follow the [README](./eks-box/README.md) because some variables have to be configured.
