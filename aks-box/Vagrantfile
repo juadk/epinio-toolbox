@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+
+# Load variables from YAML files
+require 'yaml'
+dir = File.dirname(File.expand_path(__FILE__))
+settings = YAML::load_file("#{dir}/env.yml")
+secrets = YAML::load_file("#{dir}/secrets.yml")
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+  config.vm.hostname = settings["vm"]["hostname"]
+  config.vm.box = settings["vm"]["image"]
+  config.vm.box_check_update = false
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.memory = settings["vm"]["memory"]
+    libvirt.cpus = settings["vm"]["cpus"]
+  end
+  config.vm.provision :shell, :privileged => false, :inline => <<-SHELL
+    cat <<-'EOF' > ~/.bashrc
+export RESOURCE_GROUP=#{settings["azure"]["cluster_name"]}-epinio
+export CLUSTER_NAME=#{settings["azure"]["cluster_name"]}-epinio-cluster
+export REGION=#{settings["azure"]["region"]}
+export NODE_COUNT=#{settings["azure"]["node_count"]}
+export NODE_VM_SIZE=#{settings["azure"]["vm_size"]}
+export NODE_DISK_SIZE=#{settings["azure"]["disk_size"]}
+export KUBECONFIG=~/kubeconfig_#{settings["azure"]["cluster_name"]}
+EOF
+    SHELL
+  config.vm.provision :shell, :path => "zypper/install.sh"
+  config.vm.provision :shell, :path => "azure-cli/install.sh"
+  config.vm.provision :shell, :path => "kubectl/install.sh", :args => [settings["kubectl"]["version"]]
+  config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
+  config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["version"]]
+  config.vm.provision :shell, :privileged => false, :inline => <<-SHELL
+    az login --service-principal --user #{secrets["azure"]["client_id"]} --password #{secrets["azure"]["secret"]} --tenant #{secrets["azure"]["tenant"]}
+    SHELL
+  if settings["azure"]["provision_k8s"] == true then
+    config.vm.provision :shell, :path => "aks/install.sh", :privileged => false
+  end
+end
