@@ -17,7 +17,7 @@ gcloud container clusters create   \
   --no-enable-cloud-logging
 ```
 
-You can also choose to automatically create the cluster with vagrant by setting the env `provision_gke` to `true` in the [env file](./env.yml).
+You can also choose to automatically create the cluster with vagrant by setting the env `provision_k8s` to `true` in the [env file](./env.yml).
 
 For deleting the cluster, execute this command: </br>
 `gcloud container clusters delete $GKE_CLUSTER_NAME --zone=$GKE_ZONE`

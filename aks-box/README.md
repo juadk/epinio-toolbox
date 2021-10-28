@@ -16,6 +16,8 @@ az aks create                        \
   --generate-ssh-keys
 ```
 
+You can also choose to automatically create the cluster with vagrant by setting the env `provision_k8s` to `true` in the [env file](./env.yml).
+
 For deleting the cluster, execute this command: </br>
 `az group delete --name $RESOURCE_GROUP`
 

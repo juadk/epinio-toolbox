@@ -48,7 +48,7 @@ EOF
   config.vm.provision :shell, :path => "aws-iam-authenticator/install.sh", :args => [settings["aws-iam-authenticator"]["version"]]
   config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
   config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["version"]]
-  if settings["aws"]["provision_eks"] == true then
+  if settings["aws"]["provision_k8s"] == true then
     config.vm.provision :shell, :path => "eks/install.sh", :privileged => false
   end
 end
