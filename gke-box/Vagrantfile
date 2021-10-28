@@ -37,7 +37,7 @@ EOF
   config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
   config.vm.provision :shell, :path => "google-sdk/install.sh", :args => [settings["google-sdk"]["version"]], :privileged => false
   config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["version"]]
-  if settings["gke"]["provision_gke"] == true then
+  if settings["gke"]["provision_k8s"] == true then
     config.vm.provision :shell, :path => "gke/install.sh", :privileged => false
   end
 end

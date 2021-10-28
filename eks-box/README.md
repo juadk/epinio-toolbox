@@ -17,7 +17,7 @@ eksctl create cluster --name=$AWS_EKS_CLUSTER_NAME \
               --kubeconfig=$AWS_EKS_KUBECONFIG
 ```
 
-You can also choose to automatically create the cluster with vagrant by setting the env `provision_eks` to `true` in the [env file](./env.yml).
+You can also choose to automatically create the cluster with vagrant by setting the env `provision_k8s` to `true` in the [env file](./env.yml).
 
 For deleting the cluster, execute this command: </br>
 `eksctl delete cluster --region=$AWS_REGION --name=$AWS_EKS_CLUSTER_NAME`
