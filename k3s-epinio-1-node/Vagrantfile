@@ -2,9 +2,11 @@
 # vi: set ft=ruby :
 
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
-
-BOX_IMAGE = 'opensuse/Tumbleweed.x86_64'
 bashrc_location = '/home/vagrant/.bashrc'
+# Load variables from YAML files
+require 'yaml'
+dir = File.dirname(File.expand_path(__FILE__))
+settings = YAML::load_file("#{dir}/env.yml")
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -13,34 +15,25 @@ bashrc_location = '/home/vagrant/.bashrc'
 
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
-  config.vm.define "dev-box" do |subconfig|
-    subconfig.vm.hostname = "dev-box"
-    subconfig.vm.box = BOX_IMAGE
-    subconfig.vm.box_check_update = true
-    subconfig.vm.network :public_network,
-      :dev => "virbr0",
-      :mode => "bridge",
-      :type => "bridge"
-    subconfig.vm.provider :libvirt do |libvirt|
-      libvirt.memory = 8192
-      libvirt.cpus = 2
-    end
-    subconfig.vm.provision "shell", inline: <<-SHELL
+  config.vm.hostname = settings["vm"]["hostname"]
+  config.vm.box = settings["vm"]["image"]
+  config.vm.box_check_update = false
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.memory = settings["vm"]["memory"]
+    libvirt.cpus = settings["vm"]["cpus"]
+  end
+  config.vm.provision "shell", inline: <<-SHELL
     echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> #{bashrc_location}
     source #{bashrc_location}
-    sudo zypper --non-interactive in -t pattern apparmor
-    sudo zypper --non-interactive in wget curl git
-    curl -sfL https://get.k3s.io | sh -
-    sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-    wget https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
-    tar -zxvf helm-v3.7.0-linux-amd64.tar.gz
-    sudo mv linux-amd64/helm /usr/local/bin/helm
-    curl -o epinio -L https://github.com/epinio/epinio/releases/download/v0.1.4/epinio-linux-amd64
-    chmod +x epinio
-    sudo mv ./epinio /usr/local/bin/epinio
-    git clone https://github.com/epinio/epinio.git
-    sudo chown -R vagrant:root epinio
-    epinio install
-    SHELL
+  SHELL
+  config.vm.provision :shell, :path => "zypper/install.sh"
+  config.vm.provision :shell, :path => "k3s/install.sh", :args => [settings["k3s"]["version"]]
+  config.vm.provision :shell, :path => "helm/install.sh", :args => [settings["helm"]["version"]]
+  config.vm.provision :shell, :path => "epinio/install.sh", :args => [settings["epinio"]["cli_version"]]
+  if settings["rancher"]["provision_rancher"] == true then
+    config.vm.provision :shell, :path => "rancher/install.sh", :args => [settings["vm"]["hostname"], settings["rancher"]["dashboard_version"]]
+  end
+  if settings["epinio"]["helm_chart_dev_version"] == true then
+    config.vm.provision :shell, :path => "chartmuseum/install.sh", :args => [settings["vm"]["hostname"]], :privileged => false
   end
 end
