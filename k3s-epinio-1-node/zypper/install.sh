@@ -8,6 +8,7 @@ sudo zypper -q --non-interactive in \
     wget   \
     make   \
     docker \
+    k9s    \
     unzip
 
 sudo zypper -q --non-interactive in -t pattern apparmor

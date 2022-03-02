@@ -6,4 +6,5 @@ zypper --quiet --non-interactive install \
     curl                                 \
     git                                  \
     wget                                 \
+    k9s                                  \
     unzip
