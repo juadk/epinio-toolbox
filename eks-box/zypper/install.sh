@@ -6,4 +6,5 @@ sudo zypper -q --non-interactive in \
     curl   \
     git    \
     wget   \
+    k9s    \
     unzip
