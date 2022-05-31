@@ -7,4 +7,5 @@ zypper --quiet --non-interactive install \
     git                                  \
     wget                                 \
     k9s                                  \
+    go1.18                               \
     unzip

@@ -8,6 +8,7 @@ sudo zypper -q --non-interactive in \
     wget   \
     make   \
     docker \
+    go1.18 \
     k9s    \
     unzip
 

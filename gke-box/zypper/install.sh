@@ -7,4 +7,5 @@ sudo zypper -q --non-interactive in \
     git    \
     wget   \
     k9s    \
+    go1.18 \
     unzip
