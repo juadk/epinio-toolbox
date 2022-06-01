@@ -18,6 +18,9 @@ az aks create                        \
 
 You can also choose to automatically create the cluster with vagrant by setting the env `provision_k8s` to `true` in the [env file](./env.yml).
 
+Download the kubeconfig file with: </br>
+`az aks get-credentials --admin --name $CLUSTER_NAME --resource-group $RESOURCE_GROUP`
+
 For deleting the cluster, execute this command: </br>
 `az group delete --name $RESOURCE_GROUP`
 
